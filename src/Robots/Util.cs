@@ -176,17 +176,32 @@ static class Util
 
     public static void Set(this ref Transform t, double m00, double m01, double m02, double m03, double m10, double m11, double m12, double m13, double m20, double m21, double m22, double m23)
     {
-        t.M00 = m00; t.M01 = m01; t.M02 = m02; t.M03 = m03;
-        t.M10 = m10; t.M11 = m11; t.M12 = m12; t.M13 = m13;
-        t.M20 = m20; t.M21 = m21; t.M22 = m22; t.M23 = m23;
+        t.M00 = m00;
+        t.M01 = m01;
+        t.M02 = m02;
+        t.M03 = m03;
+        t.M10 = m10;
+        t.M11 = m11;
+        t.M12 = m12;
+        t.M13 = m13;
+        t.M20 = m20;
+        t.M21 = m21;
+        t.M22 = m22;
+        t.M23 = m23;
         t.M33 = 1;
     }
 
     public static void SetRotation(this ref Transform t, double m00, double m01, double m02, double m10, double m11, double m12, double m20, double m21, double m22)
     {
-        t.M00 = m00; t.M01 = m01; t.M02 = m02;
-        t.M10 = m10; t.M11 = m11; t.M12 = m12;
-        t.M20 = m20; t.M21 = m21; t.M22 = m22;
+        t.M00 = m00;
+        t.M01 = m01;
+        t.M02 = m02;
+        t.M10 = m10;
+        t.M11 = m11;
+        t.M12 = m12;
+        t.M20 = m20;
+        t.M21 = m21;
+        t.M22 = m22;
         t.M33 = 1;
     }
 
@@ -248,11 +263,19 @@ static class Util
         double sc = Sin(c);
 
         Transform t = default;
-        t.M00 = ca * cb; t.M01 = sa * cc + ca * sb * sc; t.M02 = sa * sc - ca * sb * cc;
-        t.M10 = -sa * cb; t.M11 = ca * cc - sa * sb * sc; t.M12 = ca * sc + sa * sb * cc;
-        t.M20 = sb; t.M21 = -cb * sc; t.M22 = cb * cc;
+        t.M00 = ca * cb;
+        t.M01 = sa * cc + ca * sb * sc;
+        t.M02 = sa * sc - ca * sb * cc;
+        t.M10 = -sa * cb;
+        t.M11 = ca * cc - sa * sb * sc;
+        t.M12 = ca * sc + sa * sb * cc;
+        t.M20 = sb;
+        t.M21 = -cb * sc;
+        t.M22 = cb * cc;
         t.M33 = 1;
-        t.M03 = euler.A1; t.M13 = euler.A2; t.M23 = euler.A3;
+        t.M03 = euler.A1;
+        t.M13 = euler.A2;
+        t.M23 = euler.A3;
 
         return t;
     }
@@ -411,8 +434,8 @@ static class Util
 
             s1 = Sin((1.0 - t) * omega) * invSinOmega;
             s2 = (flip)
-                ? -Sin(t * omega) * invSinOmega
-                : Sin(t * omega) * invSinOmega;
+                 ? -Sin(t * omega) * invSinOmega
+                 : Sin(t * omega) * invSinOmega;
         }
 
         Quaternion ans = default;

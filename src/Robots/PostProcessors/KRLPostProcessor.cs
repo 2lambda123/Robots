@@ -10,7 +10,9 @@ class KRLPostProcessor
     readonly SystemKuka _system;
     readonly Program _program;
 
-    internal List<List<List<string>>> Code { get; }
+    internal List<List<List<string>>> Code {
+        get;
+    }
 
     internal KRLPostProcessor(SystemKuka system, Program program)
     {
@@ -21,10 +23,10 @@ class KRLPostProcessor
         for (int i = 0; i < _system.MechanicalGroups.Count; i++)
         {
             var groupCode = new List<List<string>>
-                    {
-                        MainFile(i),
-                        DatFile(i)
-                    };
+            {
+                MainFile(i),
+                DatFile(i)
+            };
 
             for (int j = 0; j < program.MultiFileIndices.Count; j++)
                 groupCode.Add(SrcFile(j, i));
@@ -37,11 +39,11 @@ class KRLPostProcessor
     {
         string groupName = _system.MechanicalGroups[group].Name;
         var code = new List<string>
-                {
-                    $@"&ACCESS RVP
+        {
+            $@"&ACCESS RVP
 &REL 1
 DEFDAT {_program.Name}_{groupName} PUBLIC"
-                };
+        };
 
         // Attribute declarations
         var attributes = _program.Attributes;
@@ -89,14 +91,14 @@ DEFDAT {_program.Name}_{groupName} PUBLIC"
         string groupName = _system.MechanicalGroups[group].Name;
 
         var code = new List<string>
-                {
-                    $@"&ACCESS RVP
+        {
+            $@"&ACCESS RVP
 &REL 1
 DEF {_program.Name}_{groupName}()
 BAS (#INITMOV,0)
 $ADVANCE = 5
 $APO.CPTP = 100"
-                };
+        };
 
         // Init commands
         foreach (var command in _program.InitCommands)
@@ -118,11 +120,11 @@ $APO.CPTP = 100"
         int end = (file == _program.MultiFileIndices.Count - 1) ? _program.Targets.Count : _program.MultiFileIndices[file + 1];
 
         var code = new List<string>
-                {
-                    $@"&ACCESS RVP
+        {
+            $@"&ACCESS RVP
 &REL 1
 DEF {_program.Name}_{groupName}_{file:000}()"
-                };
+        };
 
         Tool? currentTool = null;
         Frame? currentFrame = null;
@@ -236,51 +238,51 @@ DEF {_program.Name}_{groupName}_{file:000}()"
 
                 switch (cartesian.Motion)
                 {
-                    case Motions.Joint:
-                        {
-                            string bits = "";
-                            //  if (target.ChangesConfiguration)
-                            {
-                                double[] jointDegrees = programTarget.Kinematics.Joints.Map((x, i) => _system.MechanicalGroups[group].Robot.RadianToDegree(x, i));
-                                int turnNum = 0;
-                                for (int i = 0; i < 6; i++) if (jointDegrees[i] < 0) turnNum += (int)Pow(2, i);
+                case Motions.Joint:
+                {
+                    string bits = "";
+                    //  if (target.ChangesConfiguration)
+                    {
+                        double[] jointDegrees = programTarget.Kinematics.Joints.Map((x, i) => _system.MechanicalGroups[group].Robot.RadianToDegree(x, i));
+                        int turnNum = 0;
+                        for (int i = 0; i < 6; i++) if (jointDegrees[i] < 0) turnNum += (int)Pow(2, i);
 
-                                var configuration = programTarget.Kinematics.Configuration;
-                                bool shoulder = configuration.HasFlag(RobotConfigurations.Shoulder);
-                                bool elbow = configuration.HasFlag(RobotConfigurations.Elbow);
-                                elbow = !elbow;
-                                bool wrist = configuration.HasFlag(RobotConfigurations.Wrist);
+                        var configuration = programTarget.Kinematics.Configuration;
+                        bool shoulder = configuration.HasFlag(RobotConfigurations.Shoulder);
+                        bool elbow = configuration.HasFlag(RobotConfigurations.Elbow);
+                        elbow = !elbow;
+                        bool wrist = configuration.HasFlag(RobotConfigurations.Wrist);
 
-                                int configNum = 0;
-                                if (shoulder) configNum += 1;
-                                if (elbow) configNum += 2;
-                                if (wrist) configNum += 4;
+                        int configNum = 0;
+                        if (shoulder) configNum += 1;
+                        if (elbow) configNum += 2;
+                        if (wrist) configNum += 4;
 
-                                string status = Convert.ToString(configNum, 2);
-                                string turn = Convert.ToString(turnNum, 2);
-                                bits = $",S'B{status:000}',T'B{turn:000000}'";
-                            }
+                        string status = Convert.ToString(configNum, 2);
+                        string turn = Convert.ToString(turnNum, 2);
+                        bits = $",S'B{status:000}',T'B{turn:000000}'";
+                    }
 
-                            moveText = Motion("PTP", "P", GetXyzAbc(plane), bits);
+                    moveText = Motion("PTP", "P", GetXyzAbc(plane), bits);
 
-                            if (target.Zone.IsFlyBy)
-                                moveText += " C_PTP";
+                    if (target.Zone.IsFlyBy)
+                        moveText += " C_PTP";
 
-                            break;
-                        }
+                    break;
+                }
 
-                    case Motions.Linear:
-                        {
-                            moveText = Motion("LIN", "P", GetXyzAbc(plane));
+                case Motions.Linear:
+                {
+                    moveText = Motion("LIN", "P", GetXyzAbc(plane));
 
-                            if (target.Zone.IsFlyBy)
-                                moveText += " C_DIS";
+                    if (target.Zone.IsFlyBy)
+                        moveText += " C_DIS";
 
-                            break;
-                        }
+                    break;
+                }
 
-                    default:
-                        throw new ArgumentException($" Motion '{cartesian.Motion}' not supported.");
+                default:
+                    throw new ArgumentException($" Motion '{cartesian.Motion}' not supported.");
                 }
             }
 
@@ -334,10 +336,10 @@ DEF {_program.Name}_{groupName}_{file:000}()"
         var joints = _system.GetJoints(target.Group);
         var joint = joints[target.LeadingJoint];
         var speed = joint switch
-        {
-            PrismaticJoint => target.Target.Speed.TranslationExternal,
-            RevoluteJoint => target.Target.Speed.RotationExternal,
-            _ => throw new ArgumentException(nameof(joint)),
+    {
+        PrismaticJoint => target.Target.Speed.TranslationExternal,
+        RevoluteJoint => target.Target.Speed.RotationExternal,
+        _ => throw new ArgumentException(nameof(joint)),
         };
 
         var percentSpeed = Clamp(speed / joint.MaxSpeed, 0.0, 1.0);

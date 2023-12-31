@@ -9,7 +9,9 @@ class FrankxPostProcessor
 
     readonly SystemFranka _system;
     readonly Program _program;
-    internal List<List<List<string>>> Code { get; }
+    internal List<List<List<string>>> Code {
+        get;
+    }
 
     internal FrankxPostProcessor(SystemFranka system, Program program)
     {
@@ -131,12 +133,12 @@ def program():
 
                     switch (currentMotion)
                     {
-                        case Motions.Joint:
-                            throw new(" Joint catesian motions not supported in Franka Emika");
-                        case Motions.Linear:
-                            break;
-                        default:
-                            throw new NotSupportedException($" Motion {currentMotion} not supported");
+                    case Motions.Joint:
+                        throw new(" Joint catesian motions not supported in Franka Emika");
+                    case Motions.Linear:
+                        break;
+                    default:
+                        throw new NotSupportedException($" Motion {currentMotion} not supported");
                     }
                 }
 

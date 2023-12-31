@@ -6,7 +6,9 @@ class URScriptPostProcessor
 {
     readonly SystemUR _system;
     readonly Program _program;
-    internal List<List<List<string>>> Code { get; }
+    internal List<List<List<string>>> Code {
+        get;
+    }
 
     internal URScriptPostProcessor(SystemUR system, Program program)
     {
@@ -24,9 +26,9 @@ class URScriptPostProcessor
     {
         string indent = "  ";
         var code = new List<string>
-                {
-                    "def Program():"
-                };
+        {
+            "def Program():"
+        };
 
         // Attribute declarations
         var attributes = _program.Attributes;
@@ -109,26 +111,26 @@ class URScriptPostProcessor
 
                 switch (cartesian.Motion)
                 {
-                    case Motions.Joint:
-                        {
-                            var speed = GetAxisSpeed();
-                            moveText = $"  movej(p[{axisAngle[0]:0.#####}, {axisAngle[1]:0.#####}, {axisAngle[2]:0.#####}, {axisAngle[3]:0.#####}, {axisAngle[4]:0.#####}, {axisAngle[5]:0.#####}], {speed}, r={zoneDistance})";
-                            break;
-                        }
+                case Motions.Joint:
+                {
+                    var speed = GetAxisSpeed();
+                    moveText = $"  movej(p[{axisAngle[0]:0.#####}, {axisAngle[1]:0.#####}, {axisAngle[2]:0.#####}, {axisAngle[3]:0.#####}, {axisAngle[4]:0.#####}, {axisAngle[5]:0.#####}], {speed}, r={zoneDistance})";
+                    break;
+                }
 
-                    case Motions.Linear:
-                        {
-                            double linearAccel = target.Speed.TranslationAccel.ToMeters();
+                case Motions.Linear:
+                {
+                    double linearAccel = target.Speed.TranslationAccel.ToMeters();
 
-                            string speed = target.Speed.Time > 0 ?
-                                $"t={target.Speed.Time: 0.####}" :
-                                $"a={linearAccel:0.#####}, v={target.Speed.Name}";
+                    string speed = target.Speed.Time > 0 ?
+                                   $"t={target.Speed.Time: 0.####}" :
+                                   $"a={linearAccel:0.#####}, v={target.Speed.Name}";
 
-                            moveText = $"  movel(p[{axisAngle[0]:0.#####}, {axisAngle[1]:0.#####}, {axisAngle[2]:0.#####}, {axisAngle[3]:0.#####}, {axisAngle[4]:0.#####}, {axisAngle[5]:0.#####}], {speed}, r={zoneDistance})";
-                            break;
-                        }
-                    default:
-                        throw new ArgumentException($" Motion '{cartesian.Motion}' not supported.", nameof(cartesian.Motion));
+                    moveText = $"  movel(p[{axisAngle[0]:0.#####}, {axisAngle[1]:0.#####}, {axisAngle[2]:0.#####}, {axisAngle[3]:0.#####}, {axisAngle[4]:0.#####}, {axisAngle[5]:0.#####}], {speed}, r={zoneDistance})";
+                    break;
+                }
+                default:
+                    throw new ArgumentException($" Motion '{cartesian.Motion}' not supported.", nameof(cartesian.Motion));
                 }
             }
 

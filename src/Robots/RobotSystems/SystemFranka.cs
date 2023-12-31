@@ -5,7 +5,7 @@ namespace Robots;
 public class SystemFranka : CobotSystem
 {
     internal SystemFranka(string name, RobotFranka robot, IO io, Plane basePlane, Mesh? environment)
-        : base(name, Manufacturers.FrankaEmika, robot, io, basePlane, environment)
+    : base(name, Manufacturers.FrankaEmika, robot, io, basePlane, environment)
     {
         Remote = new RemoteFranka();
         RobotJointCount = 7;
@@ -35,7 +35,7 @@ public class SystemFranka : CobotSystem
     }
 
     internal override List<List<List<string>>> Code(Program program) =>
-        new FrankxPostProcessor(this, program).Code;
+    new FrankxPostProcessor(this, program).Code;
 
     internal override void SaveCode(IProgram program, string folder)
     {

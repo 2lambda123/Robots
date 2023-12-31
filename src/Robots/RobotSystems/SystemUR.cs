@@ -6,7 +6,7 @@ namespace Robots;
 public class SystemUR : CobotSystem
 {
     internal SystemUR(string name, RobotUR robot, IO io, Plane basePlane, Mesh? environment)
-        : base(name, Manufacturers.UR, robot, io, basePlane, environment)
+    : base(name, Manufacturers.UR, robot, io, basePlane, environment)
     {
         Remote = new RemoteUR();
     }
@@ -22,20 +22,20 @@ public class SystemUR : CobotSystem
         double angle, x, y, z; // variables for result
         double epsilon = 0.01; // margin to allow for rounding errors
         double epsilon2 = 0.1; // margin to distinguish between 0 and 180 degrees
-                               // optional check that input is pure rotation, 'isRotationMatrix' is defined at:
-                               // http://www.euclideanspace.com/maths/algebra/matrix/orthogonal/rotation/
-                               // assert isRotationMatrix(m) : "not valid rotation matrix";// for debugging
+        // optional check that input is pure rotation, 'isRotationMatrix' is defined at:
+        // http://www.euclideanspace.com/maths/algebra/matrix/orthogonal/rotation/
+        // assert isRotationMatrix(m) : "not valid rotation matrix";// for debugging
         if ((Abs(t.M01 - t.M10) < epsilon)
-          && (Abs(t.M02 - t.M20) < epsilon)
-        && (Abs(t.M12 - t.M21) < epsilon))
+                && (Abs(t.M02 - t.M20) < epsilon)
+                && (Abs(t.M12 - t.M21) < epsilon))
         {
             // singularity found
             // first check for identity matrix which must have +1 for all terms
             //  in leading diagonal and zero in other terms
             if ((Abs(t.M01 + t.M10) < epsilon2)
-              && (Abs(t.M02 + t.M20) < epsilon2)
-              && (Abs(t.M12 + t.M21) < epsilon2)
-            && (Abs(t.M00 + t.M11 + t.M22 - 3) < epsilon2))
+                    && (Abs(t.M02 + t.M20) < epsilon2)
+                    && (Abs(t.M12 + t.M21) < epsilon2)
+                    && (Abs(t.M00 + t.M11 + t.M22 - 3) < epsilon2))
             {
                 // this singularity is identity matrix so angle = 0
                 return new double[] { plane.OriginX, plane.OriginY, plane.OriginZ, 0, 0, 0 }; // zero angle, arbitrary axis
@@ -49,7 +49,7 @@ public class SystemUR : CobotSystem
             double xz = (t.M02 + t.M20) / 4;
             double yz = (t.M12 + t.M21) / 4;
             if ((xx > yy) && (xx > zz))
-            { // m.M00 is the largest diagonal term
+            {   // m.M00 is the largest diagonal term
                 if (xx < epsilon)
                 {
                     x = 0;
@@ -64,7 +64,7 @@ public class SystemUR : CobotSystem
                 }
             }
             else if (yy > zz)
-            { // m.M11 is the largest diagonal term
+            {   // m.M11 is the largest diagonal term
                 if (yy < epsilon)
                 {
                     x = 0.7071;
@@ -79,7 +79,7 @@ public class SystemUR : CobotSystem
                 }
             }
             else
-            { // m.M22 is the largest diagonal term so base result on this
+            {   // m.M22 is the largest diagonal term so base result on this
                 if (zz < epsilon)
                 {
                     x = 0.7071;
@@ -100,8 +100,8 @@ public class SystemUR : CobotSystem
         }
         // as we have reached here there are no singularities so we can handle normally
         double s = Sqrt((t.M21 - t.M12) * (t.M21 - t.M12)
-          + (t.M02 - t.M20) * (t.M02 - t.M20)
-          + (t.M10 - t.M01) * (t.M10 - t.M01)); // used to normalize
+                        + (t.M02 - t.M20) * (t.M02 - t.M20)
+                        + (t.M10 - t.M01) * (t.M10 - t.M01)); // used to normalize
         if (Abs(s) < 0.001) s = 1;
         // prevent divide by zero, should not happen if matrix is orthogonal and should be
         // caught by singularity test above, but I've left it in just in case
@@ -137,7 +137,8 @@ public class SystemUR : CobotSystem
         tmp1 = vector.X * vector.Z * t;
         tmp2 = vector.Y * s;
         matrix.M20 = tmp1 - tmp2;
-        matrix.M02 = tmp1 + tmp2; tmp1 = vector.Y * vector.Z * t;
+        matrix.M02 = tmp1 + tmp2;
+        tmp1 = vector.Y * vector.Z * t;
         tmp2 = vector.X * s;
         matrix.M21 = tmp1 + tmp2;
         matrix.M12 = tmp1 - tmp2;
@@ -165,7 +166,7 @@ public class SystemUR : CobotSystem
     }
 
     internal override List<List<List<string>>> Code(Program program) =>
-        new URScriptPostProcessor(this, program).Code;
+    new URScriptPostProcessor(this, program).Code;
 
     internal override void SaveCode(IProgram program, string folder)
     {
@@ -188,10 +189,10 @@ public class SystemUR : CobotSystem
         var code = string.Join("\r\n", program.Code[0].SelectMany(c => c));
 
         string urp = Util.GetStringResource("UrpTemplate.txt")
-            .Replace("{Name}", program.Name)
-            .Replace("{Version}", version)
-            .Replace("{File}", $"{program.Name}.script")
-            .Replace("{Code}", code);
+                     .Replace("{Name}", program.Name)
+                     .Replace("{Version}", version)
+                     .Replace("{File}", $"{program.Name}.script")
+                     .Replace("{Code}", code);
 
         return urp;
     }
